@@ -1,9 +1,11 @@
 class ApplicationController < ActionController::API
+  include ActionController::MimeResponds
+
+  respond_to :json
+
   rescue_from ActiveRecord::RecordNotUnique, with: :render_not_unique
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
-
-  acts_as_token_authentication_handler_for User
 
   private
 
@@ -21,11 +23,5 @@ class ApplicationController < ActionController::API
 
   def record_errors(exception)
     { errors: exception.record.errors }
-  end
-
-  # For Rubymine to stop yelling at me
-  # @return [User]
-  def current_user
-    super
   end
 end
