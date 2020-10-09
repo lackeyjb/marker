@@ -1,7 +1,10 @@
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*.rb
+StringLiterals:
+  Exclude:
+    - db/schema.rb
 Style/Documentation:
   Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
-StringLiterals:
-  Exclude:
-    - db/schema.rb

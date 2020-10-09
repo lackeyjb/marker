@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::API
   include ActionController::MimeResponds
-
   respond_to :json
 
   rescue_from ActiveRecord::RecordNotUnique, with: :render_not_unique
@@ -10,11 +9,11 @@ class ApplicationController < ActionController::API
   private
 
   def render_not_unique(exception)
-    render json: record_errors(exception), status: :conflict
+    render json: { error: exception.message }, status: :conflict
   end
 
   def render_unprocessable_entity(exception)
-    render json: record_errors(exception), status: :conflict
+    render json: record_errors(exception), status: :unprocessable_entity
   end
 
   def render_not_found(exception)
@@ -24,4 +23,17 @@ class ApplicationController < ActionController::API
   def record_errors(exception)
     { errors: exception.record.errors }
   end
+
+  # :nocov:
+  # added so Rubymine doesn't issue warning
+  # @return [User]
+  def current_user
+    super
+  end
+
+  # added so Rubymine doesn't issue warning
+  def authenticate_user!
+    super
+  end
+  # :nocov:
 end
