@@ -25,4 +25,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :rememberable, :validatable, :jwt_authenticatable,
          jwt_revocation_strategy: JwtDenylist
+
+  has_many :bookmarks, dependent: :destroy
+
+  def owner_of?(resource)
+    resource.has_attribute?(:user_id) && id == resource.user_id
+  end
 end
