@@ -7,14 +7,14 @@ export interface UserParams {
   password: string;
 }
 
-export interface UserResponse {
+export interface User {
   id: number;
   email: string;
 }
 
 async function handleUserResponse(
-  response: AxiosResponse<UserResponse>
-): Promise<UserResponse> {
+  response: AxiosResponse<User>
+): Promise<User> {
   const authToken = (response.headers as any).authorization;
   if (authToken) {
     window.localStorage.setItem(authTokenKey, authToken);
@@ -36,7 +36,7 @@ export function logout() {
   window.localStorage.removeItem(authTokenKey);
 }
 
-export async function getProfile(): Promise<UserResponse> {
-  const { data } = await client.get('profile');
+export async function getProfile() {
+  const { data } = await client.get<User>('profile');
   return data;
 }
