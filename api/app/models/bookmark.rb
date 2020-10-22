@@ -18,6 +18,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Bookmark < ApplicationRecord
+  default_scope { order(created_at: :desc) }
   belongs_to :user
 
   # TODO: validate string for url format

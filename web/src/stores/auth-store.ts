@@ -1,11 +1,12 @@
+import { queryCache } from 'react-query';
 import { create } from './middleware';
-import * as auth from '../api/auth';
+import { auth } from '../api';
 
 type Status = 'idle' | 'pending' | 'resolved' | 'rejected';
 
 type AuthStore = {
   status: Status;
-  user: auth.UserResponse | null;
+  user: auth.User | null;
   error: string | null;
   actions: {
     profile: () => Promise<void>;
@@ -19,7 +20,7 @@ export const useAuthStore = create<AuthStore>(set => {
   const action = async <T extends Function>(userFn: T) => {
     try {
       set(state => void (state.status = 'pending'));
-      const user: auth.UserResponse = await userFn();
+      const user: auth.User = await userFn();
       set(state => {
         state.status = 'resolved';
         state.user = user;
@@ -41,6 +42,7 @@ export const useAuthStore = create<AuthStore>(set => {
       login: (params: auth.UserParams) => action(() => auth.login(params)),
       logout: () => {
         auth.logout();
+        queryCache.clear();
         set(state => void (state.user = null));
       },
       signup: (params: auth.UserParams) => action(() => auth.signup(params)),
