@@ -16,6 +16,8 @@ async function handleUserResponse(
   response: AxiosResponse<User>
 ): Promise<User> {
   const authToken = (response.headers as any).authorization;
+  console.log('authToken', authToken);
+  console.log(response.headers);
   if (authToken) {
     window.localStorage.setItem(authTokenKey, authToken);
   }
