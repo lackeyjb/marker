@@ -79,7 +79,4 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: marker_production
-  username: api
-  password: <%= ENV['API_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
