@@ -16,7 +16,7 @@ export const client = axios.create(config);
 client.interceptors.request.use(request => {
   const authToken = window.localStorage.getItem(authTokenKey);
   if (authToken) {
-    request.headers.common['Authorization'] = authToken;
+    request.headers.Authorization = authToken;
   }
   return request;
 });
@@ -28,7 +28,8 @@ client.interceptors.response.use(
   function (error: AxiosError) {
     console.error('HTTP Error', error);
     if (error.response?.status === 401) {
-      logout();
+      console.log('we should be logging out');
+      // logout();
     }
   }
 );
