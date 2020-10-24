@@ -1,4 +1,4 @@
-import { logout } from './auth';
+// import { logout } from './auth';
 import { authTokenKey } from '../utils/constants';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
