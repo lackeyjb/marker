@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const FIVE_SECONDS = 5000;
 
+console.log('I was updated!!!!');
+
 ReactDOM.render(
   <React.StrictMode>
     <ToastContainer
