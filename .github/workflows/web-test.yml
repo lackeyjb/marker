@@ -25,6 +25,8 @@ jobs:
         run: yarn test
       - name: Build
         run: yarn build
+        env:
+          REACT_APP_API_URL: https://markerapi.herokuapp.com
       - name: Deploy Preview
         uses: netlify/actions/cli@master
         env:
