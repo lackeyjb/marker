@@ -24,7 +24,7 @@ group :development do
   gem 'bundler-audit', require: false
   gem 'guard-rspec', require: false
   gem 'listen', '~> 3.2'
-  gem 'rubocop', require: false
+  gem 'rubocop', '~> 1.0.0', require: false
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen', '~> 2.0.0'
