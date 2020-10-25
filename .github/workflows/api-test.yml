@@ -34,18 +34,18 @@ jobs:
         with:
           ruby-version: 2.7
           bundler-cache: true
+          working-directory: api/
 
       - name: Install gems
-        run: |
-          bundle install --jobs 4 --retry 3
+        run: bundle install
 
       - name: Run linting
-        run: bin/rubocop --parallel
+        run: rubocop --parallel
 
       - name: Run security checks
         run: |
-          bin/bundler-audit --update
-          bin/brakeman -q -w2
+          bundler-audit --update
+          brakeman -q -w2
 
       - name: Run tests
         env:
