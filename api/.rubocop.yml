@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - Guardfile
     - bin/**/*
+    - vendor/**/*
 Metrics/BlockLength:
   Exclude:
     - spec/**/*.rb
