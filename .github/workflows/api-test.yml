@@ -59,6 +59,7 @@ jobs:
         env:
           PGHOST: 127.0.0.1
           PGUSER: postgres
+          PGPASSWORD: postgres
           RAILS_ENV: test
         run: |
           bin/rails db:setup
