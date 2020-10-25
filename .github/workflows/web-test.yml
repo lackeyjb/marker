@@ -13,6 +13,7 @@ defaults:
 
 jobs:
   test:
+    name: Test, Build, and Deploy Preview
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
