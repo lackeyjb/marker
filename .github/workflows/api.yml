@@ -6,14 +6,45 @@ on:
       - api/**
     branches:
       - master
+  push:
+    paths:
+      - api/**
+    branches:
+      - master
 
 defaults:
   run:
     working-directory: api/
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+          working-directory: api/
+
+      - name: Install gems
+        run: bundle install
+
+      - name: Run rubocop
+        run: bundle exec rubocop --parallel
+
+      - name: Run security checks
+        run: |
+          bundle exec bundler-audit --update
+          bundle exec brakeman -q -w2
+
   test:
-    name: Lint and Test
+    name: Test
+    needs: lint
     runs-on: ubuntu-latest
 
     services:
@@ -47,14 +78,6 @@ jobs:
       - name: Install required apt packages
         run: sudo apt-get -yqq install libpq-dev
 
-      - name: Run linting
-        run: bundle exec rubocop --parallel
-
-      - name: Run security checks
-        run: |
-          bundle exec bundler-audit --update
-          bundle exec brakeman -q -w2
-
       - name: Run tests
         env:
           PGHOST: 127.0.0.1
@@ -65,3 +88,22 @@ jobs:
         run: |
           bin/rails db:setup
           bin/rspec
+
+  deploy:
+    name: Deploy
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.6.8
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: markerapi
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          appdir: api
+
