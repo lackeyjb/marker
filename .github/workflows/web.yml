@@ -6,6 +6,11 @@ on:
       - web/**
     branches:
       - master
+  push:
+    paths:
+      - web/**
+    branches:
+      - master
 
 defaults:
   run:
@@ -13,11 +18,12 @@ defaults:
 
 jobs:
   test:
-    name: Test, Build, and Deploy Preview
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
@@ -29,19 +35,51 @@ jobs:
       - name: Package cache
         uses: actions/cache@v1
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{steps.yarn-cache.outputs.dir}}
+          key: ${{runner.os}}-yarn-${{hashFiles('**/yarn.lock')}}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{runner.os}}-yarn-
+
       - name: Install dependencies
         run: yarn install --pure-lockfile
-      - name: Unit Tests
+
+      - name: Unit tests
         run: yarn test
+
+  build:
+    name: Build and deploy
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      - name: Find yarn cache location
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Package cache
+        uses: actions/cache@v1
+        with:
+          path: ${{steps.yarn-cache.outputs.dir}}
+          key: ${{runner.os}}-yarn-${{hashFiles('**/yarn.lock')}}
+          restore-keys: |
+            ${{runner.os}}-yarn-
+
+      - name: Install dependencies
+        run: yarn install --pure-lockfile
+
       - name: Build
         run: yarn build
         env:
           REACT_APP_API_URL: https://markerapi.herokuapp.com
+
       - name: Deploy preview
+        if: github.event_name == 'pull_request'
         id: deploy-preview
         uses: netlify/actions/cli@master
         env:
@@ -50,6 +88,7 @@ jobs:
         with:
           args: deploy --dir=web/build
       - name: Comment deploy preview URL
+        if: github.event_name == 'pull_request'
         uses: unsplash/comment-on-pr@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,3 +96,13 @@ jobs:
         with:
           msg: ${{ env.OUTPUT }}
           check_for_duplicate_msg: false
+
+      - name: Deploy to prod
+        if: github.event_name == 'push'
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=web/build --prod
+

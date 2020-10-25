@@ -90,7 +90,7 @@ jobs:
           bin/rspec
 
   deploy:
-    name: Deploy
+    name: Deploy to prod
     needs: test
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
