@@ -61,6 +61,7 @@ jobs:
           PGUSER: postgres
           PGPASSWORD: postgres
           RAILS_ENV: test
+          web_url: marker.test
         run: |
           bin/rails db:setup
           bin/rspec
