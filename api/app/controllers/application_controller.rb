@@ -27,13 +27,8 @@ class ApplicationController < ActionController::API
   # :nocov:
   # added so Rubymine doesn't issue warning
   # @return [User]
-  def current_user
-    super
-  end
 
   # added so Rubymine doesn't issue warning
-  def authenticate_user!
-    super
-  end
+
   # :nocov:
 end

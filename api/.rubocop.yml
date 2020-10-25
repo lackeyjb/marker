@@ -1,7 +1,17 @@
+AllCops:
+  Exclude:
+    - Guardfile
+    - bin/**/*
 Metrics/BlockLength:
   Exclude:
     - spec/**/*.rb
-StringLiterals:
+    - db/schema.rb
+    - db/migrate/**/*.rb
+    - lib/tasks/**/*
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/**/*.rb
+Style/StringLiterals:
   Exclude:
     - db/schema.rb
 Style/Documentation:
