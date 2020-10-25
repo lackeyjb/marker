@@ -19,9 +19,12 @@ jobs:
     services:
       postgres:
         image: postgres:11
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -38,7 +41,7 @@ jobs:
         run: bundle install
 
       - name: Install required apt packages
-        run: sudo apt-get -y install libpq-dev
+        run: sudo apt-get -yqq install libpq-dev
 
       - name: Run linting
         run: bundle exec rubocop --parallel
@@ -50,6 +53,8 @@ jobs:
 
       - name: Run tests
         env:
+          PGHOST: 127.0.0.1
+          PGUSER: postgres
           RAILS_ENV: test
         run: |
           bin/rails db:setup
