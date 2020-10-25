@@ -40,12 +40,12 @@ jobs:
         run: bundle install
 
       - name: Run linting
-        run: rubocop --parallel
+        run: bundle exec rubocop --parallel
 
       - name: Run security checks
         run: |
-          bundler-audit --update
-          brakeman -q -w2
+          bundle exec bundler-audit --update
+          bundle exec brakeman -q -w2
 
       - name: Run tests
         env:
